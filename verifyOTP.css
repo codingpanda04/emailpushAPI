@@ -1,0 +1,460 @@
+Skip to content
+DEV Community
+Find related posts...
+Powered by  Algolia
+Log in
+Create account
+
+2
+Jump to Comments
+0
+Save
+
+Manthan Ankolekar
+Manthan Ankolekar
+Posted on Feb 15 • Updated on Aug 5
+
+
+21
+Building an OTP Verification System using HTML, CSS, and JavaScript
+#
+webdev
+#
+javascript
+#
+beginners
+#
+programming
+OTP Verification System (2 Part Series)
+1
+Building an OTP Verification System with Node.js and MongoDB
+2
+Building an OTP Verification System using HTML, CSS, and JavaScript
+In today's digital age, security is paramount, especially when it comes to user authentication. One-Time Passwords (OTPs) provide an additional layer of security by ensuring that only the intended recipient can access a particular service or feature. In this blog post, we'll walk through the development of a simple OTP verification system using HTML, CSS, and JavaScript.
+
+Overview
+Our OTP verification system will consist of two main parts:
+
+Send OTP: This page will collect the user's email address and send an OTP to that email.
+Verify OTP: This page will prompt the user to enter the OTP they received via email and verify it.
+Let's dive into the implementation details.
+
+1. Send OTP Page
+Our sendOTP.html file will contain a form where users can enter their email address and request an OTP.
+<!-- sendOTP.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send OTP</title>
+  <link rel="stylesheet" href="sendOTP.css">
+</head>
+<body>
+  <h1>Send OTP</h1>
+  <form id="sendOTPForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <button type="submit">Send OTP</button>
+  </form>
+  <script src="sendOTP.js"></script>
+</body>
+</html>
+The corresponding JavaScript file sendOTP.js handles form submission and sends a request to the server to generate and send the OTP.
+// sendOTP.js
+document.addEventListener('DOMContentLoaded', () => {
+    const sendOTPForm = document.getElementById('sendOTPForm');
+
+    if (sendOTPForm) {
+        sendOTPForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = sendOTPForm.elements.email.value;
+            const response = await fetch(`/api/sendOTP?email=${email}`);
+            const result = await response.json();
+            // console.log(result);
+            alert(result.message);
+            if (result.success) {
+                window.location.href = 'verifyOTP.html';
+            }
+        });
+    }
+});
+2. Verify OTP Page
+After the user receives the OTP via email, they will proceed to the verifyOTP.html page to enter the OTP for verification.
+<!-- verifyOTP.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify OTP</title>
+  <link rel="stylesheet" href="verifyOTP.css">
+</head>
+<body>
+  <h1>Verify OTP</h1>
+  <form id="verifyOTPForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <label for="otp">OTP:</label>
+    <input type="text" id="otp" name="otp" required>
+    <button type="submit">Verify OTP</button>
+  </form>
+  <script src="verifyOTP.js"></script>
+</body>
+</html>
+// verifyOTP.js
+document.addEventListener('DOMContentLoaded', () => {
+    const verifyOTPForm = document.getElementById('verifyOTPForm');
+
+    if (verifyOTPForm) {
+        verifyOTPForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = verifyOTPForm.elements.email.value;
+            const otp = verifyOTPForm.elements.otp.value;
+            const response = await fetch(`/api/verifyOTP?email=${email}&otp=${otp}`);
+            const result = await response.json();
+            // console.log(result);
+            alert(result.message);
+            if (result.success) {
+                window.location.href = 'success.html';
+            }
+        });
+    }
+});
+Similarly, the verifyOTP.js file handles form submission and sends a request to the server to verify the OTP entered by the user.
+
+Styling
+Both the sendOTP.html and verifyOTP.html pages have their respective CSS files (sendOTP.css and verifyOTP.css) to style the forms and enhance user experience.
+/* sendOTP.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+
+  form {
+    width: 300px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+/* verifyOTP.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  form {
+    width: 300px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  input[type="email"],
+  input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  button:active {
+    background-color: #004080;
+  }
+Success Page
+Upon successful OTP verification, users will be redirected to the success.html page.
+<!-- success.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+    <link rel="stylesheet" href="success.css">
+</head>
+<body>
+    <div class="container">
+        <h1>OTP Verified Successfully</h1>
+        <!-- Add any other content you want to display on the success page -->
+    </div>
+</body>
+</html>
+/* success.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    color: #008000; /* Green color for success */
+}
+
+/* You can add more styles as needed */
+Conclusion
+In this blog post, we've created a simple OTP verification system using HTML, CSS, and JavaScript. While this implementation provides basic functionality, you can further enhance it by adding features such as error handling, session management, and backend validation. Remember, security should always be a top priority when implementing authentication systems.
+
+Exploring the Code
+Visit the GitHub repository to explore the code in detail.
+
+Feel free to customize the blog according to your preferences and provide more details or explanations where needed.
+
+OTP Verification System (2 Part Series)
+1
+Building an OTP Verification System with Node.js and MongoDB
+2
+Building an OTP Verification System using HTML, CSS, and JavaScript
+👋 Before you go
+
+Your next step
+Do your career a favor. Join DEV.
+
+It takes one minute and is worth it for your career.
+
+Get started
+
+Top comments (2)
+Subscribe
+pic
+Add to the discussion
+ 
+ 
+canada_visa_c96a5b873993d profile image
+Canada Visa
+•
+Jul 31
+
+What about in phone number
+
+
+2
+ likes
+Like
+Reply
+ 
+ 
+manthanank profile image
+Manthan Ankolekar 
+•
+Jul 31 • Edited on Jul 31
+
+For phone or sms can use twilio
+
+
+1
+ like
+Like
+Reply
+Code of Conduct • Report abuse
+profile
+Mailgun
+Promoted
+
+Mailgun image
+
+The email API built for devs
+Never miss the inbox again. Choose the industry-leading email API trusted by developers.
+
+Try Now
+
+Read next
+0xw3ston profile image
+Front-End & Back-End (CSR)
+Youssef El Idrissi - Aug 2
+
+mikeyoung44 profile image
+Unveiling Llama 3: Multilingual, Code-Savvy, Reasoning Foundation Models Excel Like GPT-4
+Mike Young - Aug 2
+
+noorscript profile image
+🔥Advanced Array Methods in JavaScript
+Noor Fatima - Aug 6
+
+samirabawad profile image
+Asynchronous Requests in JavaScript: AJAX, JQUERY, FETCH and AXIOS.
+Samira - Aug 2
+
+
+Manthan Ankolekar
+Follow
+JavaScript | Angular | Nodejs | MongoDB | Express.js | Python | Firebase | MySQL |
+Location
+Karnataka, India
+Education
+Bachelor of Engineering in Computer Science
+Work
+Full Stack Developer
+Joined
+Feb 21, 2021
+More from Manthan Ankolekar
+Building a URL Shortener App with Angular and Tailwind CSS
+#webdev #javascript #beginners #programming
+Building a URL Shortener App with Node.js and MongoDB
+#webdev #javascript #beginners #programming
+Optimizing Angular Performance with `trackBy` in `ngFor`
+#webdev #angular #programming #beginners
+profile
+Sentry
+Promoted
+
+Next.js
+
+Next.js Performance Monitoring
+Within minutes after installing Sentry, software teams are able to trace Next.js performance issues back to a poor performing API call as well as surface all related code errors. Engineering Managers and Developers now have a single tool to optimize the performance of their code and deliver fast customer experiences.
+
+Try Sentry
+
+/* verifyOTP.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  form {
+    width: 300px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  input[type="email"],
+  input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  button:active {
+    background-color: #004080;
+  }
+DEV Community — A constructive and inclusive social network for software developers. With you every step of your journey.
+
+Home
+Podcasts
+Videos
+Tags
+DEV Help
+Forem Shop
+Advertise on DEV
+DEV Challenges
+DEV Showcase
+About
+Contact
+Guides
+Software comparisons
+Code of Conduct
+Privacy Policy
+Terms of use
+Built on Forem — the open source software that powers DEV and other inclusive communities.
+
+Made with love and Ruby on Rails. DEV Community © 2016 - 2024.
